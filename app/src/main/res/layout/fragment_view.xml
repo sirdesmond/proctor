@@ -2,28 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.team2.android.proctor.ui.ProfessorFragment">
+    tools:context=".ui.ViewAttendanceFragment">
+
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/present_tv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Professor Course Page"
+            android:text="Students present in class"
             android:textSize="25sp"
-            android:background="#f3c500"
-            android:textColor="#000000" />
+            android:background="#f3be00" />
+
+
         <ListView
+            android:id="@+id/presentList"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:id="@+id/courselist">
-        </ListView>
+            android:layout_height="wrap_content"></ListView>
     </LinearLayout>
 
 
-
 </FrameLayout>
+

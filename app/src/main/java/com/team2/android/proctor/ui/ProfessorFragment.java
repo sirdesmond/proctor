@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class ProfessorFragment extends Fragment {
+public class ProfessorFragment extends BackHandledFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -85,6 +85,16 @@ public class ProfessorFragment extends Fragment {
             throw new ClassCastException(activity.toString()
             + "must implement OnCourseSelectedListener");
         }
+    }
+
+    @Override
+    public String getTagText() {
+        return TAG;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     @Override

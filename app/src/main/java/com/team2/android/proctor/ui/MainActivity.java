@@ -18,7 +18,9 @@ import com.team2.android.proctor.model.output.Course;
 public class MainActivity  extends ActionBarActivity
         implements NavigationDrawerCallbacks,
         ProfessorFragment.OnCourseSelectedListener,
-        StudentFragment.OnCourseSelectedListener{
+        StudentFragment.OnCourseSelectedListener,
+        AttendanceFragment.OnViewCoursesListener,
+        BackHandledFragment.BackHandlerInterface{
 
     User user;
     Fragment fragment;
@@ -30,6 +32,7 @@ public class MainActivity  extends ActionBarActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mToolbar;
     Bundle bundle;
+    private BackHandledFragment selectedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,11 @@ public class MainActivity  extends ActionBarActivity
                 }
                 break;
             case 1:
+                fragment = getFragmentManager().findFragmentByTag(HelpFragment.TAG);
+                if (fragment == null) {
+                    fragment = new HelpFragment();
+                }
+                getFragmentManager().beginTransaction().replace(R.id.container, fragment, HelpFragment.TAG).commit();
                 break;
             case 2:
                 ((Proctor)getApplicationContext()).getSession().logoutUser();
@@ -176,5 +184,28 @@ public class MainActivity  extends ActionBarActivity
                    .commit();
        }
 
+    }
+
+
+    @Override
+    public void onViewCourses(int courseId) {
+        ViewAttendanceFragment attendanceFrag = (ViewAttendanceFragment)
+                getFragmentManager().findFragmentByTag(ViewAttendanceFragment.TAG);
+
+        if(attendanceFrag==null) {
+            Log.d("Main", "course selected: " + courseId);
+            attendanceFrag = new ViewAttendanceFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("courseId", courseId);
+            attendanceFrag.setArguments(args);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, attendanceFrag, ViewAttendanceFragment.TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void setSelectedFragment(BackHandledFragment backHandledFragment) {
+        this.selectedFragment = backHandledFragment;
     }
 }

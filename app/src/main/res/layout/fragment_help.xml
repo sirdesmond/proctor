@@ -1,0 +1,109 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.team2.android.proctor.ui.HelpFragment">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Proctor"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#1796eb"
+            android:id="@+id/textView2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="It is an easy-to-use attendance management system aimed at making the life of professors and students easy and the process of attendance tracking a painless one.\n"
+            android:id="@+id/intro"
+            android:layout_below="@+id/textView2"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View your courses"
+            android:id="@+id/course"
+            android:textColor="#1796eb"
+            android:layout_below="@+id/intro"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View the courses taken by you and schedule of the courses. The courses are displayed on the home page.Click on the course to view more details about it.\n "
+            android:id="@+id/courseintro"
+            android:layout_below="@+id/course"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Check in for student"
+            android:id="@+id/signin"
+            android:layout_below="@+id/courseintro"
+            android:layout_alignParentStart="true"
+            android:textColor="#1796eb"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Students can mark his/her attendance and they can check their status for any subject like in terms of attendance for that particular course.\n"
+            android:id="@+id/attendintro"
+            android:layout_below="@+id/signin"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Receive reminder notifications to attend class"
+            android:id="@+id/notify"
+            android:textColor="#1796eb"
+            android:layout_below="@+id/takeintro"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student can enable notifications feature to receive reminders to attend classes that he/she is registered."
+            android:id="@+id/textView"
+            android:layout_below="@+id/notify"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take attendance by Professors"
+            android:id="@+id/takeattend"
+            android:layout_below="@+id/attendintro"
+            android:textColor="#1796eb"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Professor will initiate the process of attendance and student has to be in specific domain/range to mark the attendance otherwise they cannot mark the attendance.\n"
+            android:id="@+id/takeintro"
+            android:layout_below="@+id/takeattend"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+
+</FrameLayout>

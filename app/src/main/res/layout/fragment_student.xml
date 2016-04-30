@@ -10,10 +10,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student Course Page"/>
+            android:orientation="horizontal"
+            android:weightSum="4">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student Course Page"
+                android:textSize="25sp"
+                android:background="#f3c500"
+                android:textColor="#000000"
+                android:layout_weight="3"/>
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notify"
+                android:id="@+id/notify"
+                android:layout_gravity="right"
+                android:checked="false"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
         <ListView
         android:layout_width="match_parent"
         android:layout_height="300dp"

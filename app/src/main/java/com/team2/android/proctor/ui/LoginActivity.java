@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,15 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements
+        View.OnClickListener{
 
     Proctor proctor;
+    Button login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        login = (Button) findViewById(R.id.btn_login);
         proctor = (Proctor) getApplicationContext();
+
+        login.setOnClickListener(this);
     }
 
     private LoginInput testInput;
@@ -79,6 +85,21 @@ public class LoginActivity extends AppCompatActivity {
     public boolean isValidInput(String username, String password) {
 
         return (username.isEmpty() || password.isEmpty()) ? false : true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.btn_login){
+            try {
+                loginVerification(v);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     class GetData extends AsyncTask<LoginInput, Integer, JSONObject> {

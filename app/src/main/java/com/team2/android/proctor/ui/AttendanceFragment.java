@@ -1,5 +1,6 @@
 package com.team2.android.proctor.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AttendanceFragment extends Fragment implements
+public class AttendanceFragment extends BackHandledFragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener,
@@ -59,7 +60,13 @@ public class AttendanceFragment extends Fragment implements
     Course course;
     Proctor proctor;
     View fragmentView;
+    OnViewCoursesListener mCallback;
     Bundle bundle;
+
+
+    public interface OnViewCoursesListener{
+        public void onViewCourses(int courseId);
+    }
 
     /**
      * Timeouts (in millis) for startAdvertising and startDiscovery.
@@ -130,6 +137,29 @@ public class AttendanceFragment extends Fragment implements
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try{
+            mCallback = (OnViewCoursesListener) activity;
+        }catch(ClassCastException e){
+            throw new ClassCastException(activity.toString()
+                    + "must implement OnCourseSelectedListener");
+        }
+    }
+
+    @Override
+    public String getTagText() {
+        return TAG;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     @Override
@@ -457,9 +487,8 @@ public class AttendanceFragment extends Fragment implements
         switch(v.getId()) {
             case R.id.viewatt_btn:
                 //call to view Attendance fragment
-                Intent intent = new Intent(getActivity(),ViewAttendanceActivity.class);
-                intent.putExtra("courseId",course.getCourse_id());
-                startActivity(intent);
+                mCallback.onViewCourses(course.getCourse_id());
+
                 break;
 
             case R.id.takeatt_btn:

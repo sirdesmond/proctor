@@ -33,10 +33,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.LoginActivity" />
-        <activity
-            android:name=".ui.ViewAttendanceActivity"
-            android:label="@string/title_activity_view_attendance"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ui.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,6 +40,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".util.AlarmReceiver"/>
     </application>
 
 </manifest>

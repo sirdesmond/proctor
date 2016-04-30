@@ -1,7 +1,11 @@
 package com.team2.android.proctor.ui;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,12 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import com.team2.android.proctor.R;
 import com.team2.android.proctor.model.constants.Constants;
 import com.team2.android.proctor.model.input.User;
 import com.team2.android.proctor.model.output.Course;
+import com.team2.android.proctor.util.AlarmReceiver;
 import com.team2.android.proctor.util.CourseAdapter;
 import com.team2.android.proctor.util.JSONParser;
 
@@ -26,21 +33,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class StudentFragment extends Fragment {
+public class StudentFragment extends BackHandledFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     public static final String TAG = "prof";
+    int PRIVATE_MODE = 0;
+    private static final String PREF_NAME = "PROCTOR_PREF_KEY";
+    private static final String NOTIFY_STATUS = "NOTIFY_STATUS";
 
 
-    public ArrayList<Course> courses  = new ArrayList<Course>();
+    public ArrayList<Course> courses = new ArrayList<Course>();
+    ArrayList<PendingIntent> intentarray = new ArrayList<PendingIntent>();
     Proctor proctor;
 
 
@@ -50,9 +66,12 @@ public class StudentFragment extends Fragment {
     User user;
     ListView courselist;
     CourseAdapter courseAdapter;
+    ArrayList<Calendar> calTimes = new ArrayList<>();
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
-    public interface OnCourseSelectedListener{
-        public void onCourseSelected(User user,Course course);
+    public interface OnCourseSelectedListener {
+        public void onCourseSelected(User user, Course course);
     }
 
     public StudentFragment() {
@@ -81,12 +100,22 @@ public class StudentFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        try{
+        try {
             mCallback = (OnCourseSelectedListener) activity;
-        }catch(ClassCastException e){
+        } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + "must implement OnCourseSelectedListener");
         }
+    }
+
+    @Override
+    public String getTagText() {
+        return TAG;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return true;
     }
 
     @Override
@@ -105,7 +134,7 @@ public class StudentFragment extends Fragment {
         Log.d("Student", "user id: " + user.getUserId());
         long studentIDint = user.getUserId();
         String studentID = String.valueOf(studentIDint);
-        GetStudentCourseData getStudentCourseData =  new GetStudentCourseData(studentID);
+        GetStudentCourseData getStudentCourseData = new GetStudentCourseData(studentID);
         getStudentCourseData.execute((Void) null);
 
         JSONArray jsonCourses = null;
@@ -130,13 +159,12 @@ public class StudentFragment extends Fragment {
         int[] courseIds = new int[size];
 
         try {
-            for(int i=0;i<size;i++)
-            {
+            for (int i = 0; i < size; i++) {
                 JSONObject object = jsonCourses.getJSONObject(i);
-                courseNames[i]=object.getString("courseName");
-                stimestamps[i]= Time.valueOf(object.getString("courseStartTime"));
-                etimestamps[i]= Time.valueOf(object.getString("courseEndTime"));
-                days[i]=object.getString("days");
+                courseNames[i] = object.getString("courseName");
+                stimestamps[i] = Time.valueOf(object.getString("courseStartTime"));
+                etimestamps[i] = Time.valueOf(object.getString("courseEndTime"));
+                days[i] = object.getString("days");
                 courseIds[i] = object.getInt("course_id");
 
             }
@@ -144,16 +172,52 @@ public class StudentFragment extends Fragment {
             e.printStackTrace();
         }
         Course coursearray[] = new Course[size];
-        for(int i=0;i<size;i++)
-        {
-            coursearray[i] = new Course(courseIds[i],courseNames[i],
-                    stimestamps[i],etimestamps[i],days[i]);
+        for (int i = 0; i < size; i++) {
+            coursearray[i] = new Course(courseIds[i], courseNames[i],
+                    stimestamps[i], etimestamps[i], days[i]);
             courses.add(coursearray[i]);
         }
 
+        int alarm_req = 0;
+        for (int n = 0; n < size; n++) {
+            alarm_req = alarm_req + days[n].length();
+        }
+        final int alarm_cnt = alarm_req;
+        Switch notifySwitch = (Switch) fragmentView.findViewById(R.id.notify);
+        pref = getActivity().getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+        boolean notify_status = pref.getBoolean(NOTIFY_STATUS, false);
+
+        //set the switch to ON
+        if (notify_status)
+            notifySwitch.setChecked(true);
+        else
+            notifySwitch.setChecked(false);
+        notifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+
+                if (isChecked) {
+                    // switchStatus.setText("Switch is currently ON");
+                    try {
+                        editor.putBoolean(NOTIFY_STATUS, true);
+                        editor.commit();
+                        alarms(alarm_cnt);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    cancelAlarm();
+                    editor.putBoolean(NOTIFY_STATUS, false);
+                    editor.commit();
+                }
 
 
-
+            }
+        });
     }
 
     @Override
@@ -161,10 +225,10 @@ public class StudentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_student, container, false);
-         courselist = (ListView) fragmentView.findViewById(R.id.courselist);
+        courselist = (ListView) fragmentView.findViewById(R.id.courselist);
 
 
-        courseAdapter = new CourseAdapter(getActivity(),android.R.layout.simple_list_item_1,courses);
+        courseAdapter = new CourseAdapter(getActivity(), android.R.layout.simple_list_item_1, courses);
         courselist.setAdapter(courseAdapter);
 
         courselist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -173,20 +237,148 @@ public class StudentFragment extends Fragment {
                 //start attendance activity with selected course details and user type
                 Course course = courses.get(position);
 
-                mCallback.onCourseSelected(user,course);
+                mCallback.onCourseSelected(user, course);
             }
         });
+
+
         return fragmentView;
     }
 
+
+    private void alarms(int alarm_req) throws ParseException {
+
+        int days_send[] = new int[alarm_req];
+        String[] courseNames_send = new String[alarm_req];
+        int alarm_count = 0;
+        int size = courses.size();
+// getting days of  courses and c
+        for (int m = 0; m < size; m++) {
+            String time = courses.get(m).getCourseStartTime().toString();
+            try {
+                for (int k = 0; k < courses.get(m).getDays().length(); k++) {
+                    System.out.println(courses.get(m).getDays().charAt(k));
+                    switch (courses.get(m).getDays().charAt(k)) {
+                        case 'M':
+                            System.out.println("is M equi int 2");
+                            days_send[alarm_count] = 2;
+                            courseNames_send[alarm_count] = courses.get(m).getCourseName();
+                            alarm_count++;
+                            break;
+                        case 'T':
+                            System.out.println("is T equi int 3");
+                            days_send[alarm_count] = 3;
+                            courseNames_send[alarm_count] = courses.get(m).getCourseName();
+                            alarm_count++;
+                            break;
+                        case 'W':
+                            System.out.println("is W equi int 4");
+                            days_send[alarm_count] = 4;
+                            courseNames_send[alarm_count] = courses.get(m).getCourseName();
+                            alarm_count++;
+                            break;
+                        case 'R':
+                            System.out.println("is R equi int 5");
+                            days_send[alarm_count] = 5;
+                            courseNames_send[alarm_count] = courses.get(m).getCourseName();
+                            alarm_count++;
+                            break;
+                        case 'F':
+                            System.out.println("is F equi int 6");
+                            days_send[alarm_count] = 6;
+                            courseNames_send[alarm_count] = courses.get(m).getCourseName();
+                            alarm_count++;
+                            break;
+                        case 'S':
+                            System.out.println("is S equi int 7");
+                            days_send[alarm_count] = 7;
+                            courseNames_send[alarm_count] = courses.get(m).getCourseName();
+                            alarm_count++;
+                            break;
+                        default:
+                            break;
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        //
+        int index = 0;
+        for (int r = 0; r < courses.size(); r++) {
+            String time = courses.get(r).getCourseStartTime().toString();
+            DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            try {
+                Calendar dBCourseTime = Calendar.getInstance();
+                dBCourseTime.setTimeInMillis(System.currentTimeMillis());
+                Date dt = formatter.parse(time);
+                dBCourseTime.setTime(dt);
+                int hour = dBCourseTime.get(Calendar.HOUR_OF_DAY);
+                int minute = dBCourseTime.get(Calendar.MINUTE);
+                int second = dBCourseTime.get(Calendar.SECOND);
+                for (int s = 0; s < courses.get(r).getDays().length(); s++) {
+                    Calendar alarmTime = Calendar.getInstance();
+                    alarmTime.setTimeInMillis(System.currentTimeMillis());
+                    alarmTime.set(Calendar.DAY_OF_WEEK, days_send[index]);
+                    alarmTime.set(Calendar.HOUR_OF_DAY, hour);
+                    alarmTime.set(Calendar.MINUTE, minute);
+                    alarmTime.set(Calendar.SECOND, 0);
+                    alarmTime.set(Calendar.MILLISECOND, 0);
+                    if (alarmTime.getTimeInMillis() < System.currentTimeMillis()) {
+                        alarmTime.add(Calendar.DATE, 7);
+                    }
+                    calTimes.add(alarmTime);
+                    index++;
+                }
+            } catch (Exception ex) {
+
+            }
+
+        }
+
+        PendingIntent pendingIntent;
+
+        Intent alarmIntent = new Intent(this.getActivity(), AlarmReceiver.class);
+
+        for (int i = 0; i < alarm_req; i++) {
+            alarmIntent.putExtra("reqcode", (i * 1) + 37);
+            alarmIntent.putExtra("course", courseNames_send[i]);
+            if (System.currentTimeMillis() < calTimes.get(i).getTimeInMillis() - 5 * 60 * 1000) {
+                pendingIntent = PendingIntent.getBroadcast(this.getActivity(), (i * 1) + 37, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                AlarmManager alarmManager = (AlarmManager) this.getActivity().getSystemService(getActivity().ALARM_SERVICE);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, (calTimes.get(i).getTimeInMillis()) - 5 * 60 * 1000, pendingIntent);
+                intentarray.add(pendingIntent);
+            }
+        }
+    }
+
+
+    void cancelAlarm() {
+        Intent intentstop = new Intent(getActivity(), AlarmReceiver.class);
+        int size = intentarray.size();
+        for (int i = 0; i < size; i++) {
+            Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+            AlarmManager alarmManagerstop = (AlarmManager) getActivity().getSystemService(getActivity().ALARM_SERVICE);
+            alarmManagerstop.cancel(intentarray.get(i));
+            intentarray.get(i).cancel();
+        }
+
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        alarmReceiver.stopAlarm(getActivity(), intentarray);
+        intentarray.clear();
+        calTimes.clear();
+    }
 
 
     class GetStudentCourseData extends AsyncTask<Void, Void, JSONArray> {
         private final String id;
 
-        GetStudentCourseData(String id)
-        {
-            this.id=id;
+        GetStudentCourseData(String id) {
+            this.id = id;
         }
 
         @Override
@@ -195,7 +387,7 @@ public class StudentFragment extends Fragment {
 
             List<NameValuePair> params1 = new ArrayList<NameValuePair>();
 
-            params1.add(new BasicNameValuePair("id",id));
+            params1.add(new BasicNameValuePair("id", id));
 
             returnJsonVal = JSONParser.makeHttpRequestArray(Constants.STUDENT_COURSES_URL, "POST", params1);
 
@@ -203,4 +395,6 @@ public class StudentFragment extends Fragment {
 
         }
 
-    }}
+    }
+
+}

@@ -122,8 +122,9 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public List getMenu() {
         List items = new ArrayList();
         items.add(new NavigationItem(getString(R.string.home), getResources().getDrawable(R.drawable.ic_home)));
-        items.add(new NavigationItem(getString(R.string.settings), getResources().getDrawable(R.drawable.ic_action_settings)));
+        items.add(new NavigationItem(getString(R.string.help), getResources().getDrawable(R.drawable.ic_help)));
         items.add(new NavigationItem(getString(R.string.logout), getResources().getDrawable(R.drawable.ic_home)));
+
         return items;
     }
 
