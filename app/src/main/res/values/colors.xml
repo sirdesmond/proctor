@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#a9a0a0</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="primarayBackground">#3154dc</color>
+    <color name="secondryBackground">#69d2d4</color>
+
+
+    <color name="primaryButton">#e79d57</color>
+    <color name="primaryButtonText">#121111</color>
+
+    <color name="primaryEditBackground">#d6d3d3</color>
+    <color name="primaryEditTextColor">#121111</color>
+
+    <color name="behindTheList">#485cce</color>
+    <color name="listElements">#ffffff</color>
+    <color name="listElementsBorder">#838080</color>
+
+    <color name="listTextColor">#ffffff</color>
+    <color name="listTextBackGround">#08ff39</color>
+
+    <!--
+        Check Android Theme colors for color reference:
+        https://developer.android.com/training/material/images/ThemeColors.png
+
+        Refer also to Color palette for the UI colors you should use:
+        http://www.google.com/design/spec/style/color.html#color-ui-color-palette
+    -->
+
+    <color name="myPrimaryColor">#78909C</color>
+    <color name="myPrimaryDarkColor">#607D8B</color>
+    <color name="myAccentColor">#006064</color>
+    <color name="myDrawerBackground">#607D8B</color>
+    <color name="myWindowBackground">#78909C</color>
+    <color name="myTextPrimaryColor">#000000</color>
+    <color name="myNavigationColor">#000000</color>
+
+    <drawable name="pressed_gray">#0c000000</drawable>
+    <drawable name="selected_gray">#ffdbdbdb</drawable>
+
+
+</resources>

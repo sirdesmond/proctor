@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">Proctor</string>
+
+    <!-- Service ID for Nearby connections -->
+    <string name="service_id">com.team2.android.proctor.attendance.service</string>
+    <!-- Strings related to login -->
+
+    <string name="action_settings">Setting</string>
+    <string name="logout">Logout</string>
+    <string name="help_setting">Help</string>
+    <string name="classes_setting">Course Schedule</string>
+    <string name="attendanceStatus_setting">Attendance Status</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+
+        completions."
+    </string>
+    <!-- authentication page-->
+    <string name="hint_userId">"user id"</string>
+    <string name="hint_password">"password"</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_attendance">AttendanceActivity</string>
+
+    <!-- shared preference login-->
+    <string name="SHARED_PREF_KEY">PROCTOR_PREF_KEY</string>
+    <string name="USERNAME">userName</string>
+    <string name="USERID">userId</string>
+    <string name="IS_STUDENT">IsStudent</string>
+    <string name="title_activity_view_attendance">ViewAttendanceActivity</string>
+
+    <string name="id_name">temp name</string>
+    <string name="title_activity_main_material">MainMaterialActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_main_mat">MainMatActivity</string>
+    <string name="drawer_open">Menu opened</string>
+    <string name="drawer_close">Menu closed</string>
+    <string name="search">Search</string>
+    <string name="stats">Stats</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
