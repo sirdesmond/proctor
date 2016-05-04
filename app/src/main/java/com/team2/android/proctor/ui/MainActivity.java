@@ -135,7 +135,7 @@ public class MainActivity  extends ActionBarActivity
                     fragment.setArguments(bundle);
                 }
                 getFragmentManager().beginTransaction().replace(R.id.container, fragment, StudentFragment.TAG)
-                        .addToBackStack(ProfessorFragment.TAG).commit();
+                        .addToBackStack(StudentFragment.TAG).commit();
             }
         }
     }
