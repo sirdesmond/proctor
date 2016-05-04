@@ -10,13 +10,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.team2.android.proctor.R;
 import com.team2.android.proctor.model.constants.Constants;
@@ -43,7 +46,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class StudentFragment extends BackHandledFragment {
+public class StudentFragment extends BackHandledFragment
+        //implements CompoundButton.OnCheckedChangeListener
+{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -69,6 +74,30 @@ public class StudentFragment extends BackHandledFragment {
     ArrayList<Calendar> calTimes = new ArrayList<>();
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+
+    int alarm_req = 0;
+
+  /*  @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+       if (isChecked) {
+            final int alarm_cnt = alarm_req;
+            // switchStatus.setText("Switch is currently ON");
+            try {
+                editor.putBoolean(NOTIFY_STATUS, true);
+                editor.commit();
+                Log.d("Alarm", "starting alarm...");
+                alarms(alarm_cnt);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Log.d("Alarm","not checked");
+            cancelAlarm();
+            editor.putBoolean(NOTIFY_STATUS, false);
+            editor.commit();
+        }
+    }*/
 
     public interface OnCourseSelectedListener {
         public void onCourseSelected(User user, Course course);
@@ -115,7 +144,7 @@ public class StudentFragment extends BackHandledFragment {
 
     @Override
     public boolean onBackPressed() {
-        return true;
+        return false;
     }
 
     @Override
@@ -124,6 +153,11 @@ public class StudentFragment extends BackHandledFragment {
         proctor = (Proctor) getActivity().getApplicationContext();
         bundle = getArguments();
 
+        try {
+            alarms(alarm_req);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         LayoutInflater mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -178,12 +212,12 @@ public class StudentFragment extends BackHandledFragment {
             courses.add(coursearray[i]);
         }
 
-        int alarm_req = 0;
+
         for (int n = 0; n < size; n++) {
             alarm_req = alarm_req + days[n].length();
         }
-        final int alarm_cnt = alarm_req;
-        Switch notifySwitch = (Switch) fragmentView.findViewById(R.id.notify);
+
+  /*      Switch notifySwitch = (Switch) fragmentView.findViewById(R.id.notify_alarm);
         pref = getActivity().getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
         boolean notify_status = pref.getBoolean(NOTIFY_STATUS, false);
@@ -193,31 +227,38 @@ public class StudentFragment extends BackHandledFragment {
             notifySwitch.setChecked(true);
         else
             notifySwitch.setChecked(false);
+
+        Log.d("Alarm", "switch? " + notifySwitch.getId());
+      //  notifySwitch.setOnCheckedChangeListener(this);
         notifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
-
+Log.d("","clicked on toggle");
                 if (isChecked) {
                     // switchStatus.setText("Switch is currently ON");
                     try {
+                        Log.d("","clicked on on");
                         editor.putBoolean(NOTIFY_STATUS, true);
                         editor.commit();
-                        alarms(alarm_cnt);
+                        alarms(alarm_req);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
                 } else {
+                    Log.d("","clicked on off");
                     cancelAlarm();
                     editor.putBoolean(NOTIFY_STATUS, false);
                     editor.commit();
                 }
 
-
             }
         });
+*/
+
+
     }
 
     @Override
@@ -238,6 +279,52 @@ public class StudentFragment extends BackHandledFragment {
                 Course course = courses.get(position);
 
                 mCallback.onCourseSelected(user, course);
+            }
+        });
+
+
+
+        Switch notifySwitch = (Switch) fragmentView.findViewById(R.id.notify_alarm);
+        pref = getActivity().getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        editor = pref.edit();
+        boolean notify_status = pref.getBoolean(NOTIFY_STATUS, false);
+
+        //set the switch to ON
+        if (notify_status)
+            notifySwitch.setChecked(true);
+        else
+            notifySwitch.setChecked(false);
+
+        Log.d("Alarm", "switch? " + notifySwitch.getId());
+        //  notifySwitch.setOnCheckedChangeListener(this);
+        notifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                Log.d("", "clicked on toggle");
+                if (isChecked) {
+                    // switchStatus.setText("Switch is currently ON");
+                    try {
+                        Log.d("", "clicked on on");
+                        //Toast.makeText(getActivity().getApplicationContext(), "Test  clicked on swtch!!!", Toast.LENGTH_LONG).show();
+
+                        editor.putBoolean(NOTIFY_STATUS, true);
+                        editor.commit();
+                        alarms(alarm_req);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Log.d("", "clicked on off");
+//                    Toast.makeText(getActivity().getApplicationContext(), "Test  clicked on swtch!!!", Toast.LENGTH_LONG).show();
+
+                    cancelAlarm();
+                    editor.putBoolean(NOTIFY_STATUS, false);
+                    editor.commit();
+                }
+
             }
         });
 
@@ -313,6 +400,7 @@ public class StudentFragment extends BackHandledFragment {
             String time = courses.get(r).getCourseStartTime().toString();
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             try {
+                Log.d("Student","in here:"+ courses.size());
                 Calendar dBCourseTime = Calendar.getInstance();
                 dBCourseTime.setTimeInMillis(System.currentTimeMillis());
                 Date dt = formatter.parse(time);
@@ -342,14 +430,14 @@ public class StudentFragment extends BackHandledFragment {
 
         PendingIntent pendingIntent;
 
-        Intent alarmIntent = new Intent(this.getActivity(), AlarmReceiver.class);
+        Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
 
         for (int i = 0; i < alarm_req; i++) {
             alarmIntent.putExtra("reqcode", (i * 1) + 37);
             alarmIntent.putExtra("course", courseNames_send[i]);
             if (System.currentTimeMillis() < calTimes.get(i).getTimeInMillis() - 5 * 60 * 1000) {
-                pendingIntent = PendingIntent.getBroadcast(this.getActivity(), (i * 1) + 37, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                AlarmManager alarmManager = (AlarmManager) this.getActivity().getSystemService(getActivity().ALARM_SERVICE);
+                pendingIntent = PendingIntent.getBroadcast(getActivity(), (i * 1) + 37, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, (calTimes.get(i).getTimeInMillis()) - 5 * 60 * 1000, pendingIntent);
                 intentarray.add(pendingIntent);
             }
@@ -397,4 +485,9 @@ public class StudentFragment extends BackHandledFragment {
 
     }
 
+
+    public void myclick(View v)
+    {
+        Log.d("","on myclick success");
+    }
 }

@@ -8,8 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.team2.android.proctor.R;
 import com.team2.android.proctor.model.input.User;
@@ -60,7 +62,7 @@ public class MainActivity  extends ActionBarActivity
             case 0:
                 if(user.getCode() == 0){
                     //start professor fragment
-                    Log.d("Main","in main here");
+                    Log.d("Main", "in main here");
                     fragment = getFragmentManager().findFragmentByTag(ProfessorFragment.TAG);
                     bundle = new Bundle();
                     bundle.putSerializable("user", user);
@@ -68,18 +70,21 @@ public class MainActivity  extends ActionBarActivity
                         fragment = new ProfessorFragment();
                         fragment.setArguments(bundle);
                     }
-                    getFragmentManager().beginTransaction().replace(R.id.container, fragment, ProfessorFragment.TAG).commit();
+
+                    getFragmentManager().beginTransaction().replace(R.id.container, fragment, ProfessorFragment.TAG)
+                            .addToBackStack(ProfessorFragment.TAG).commit();
                 }
                 else if(user.getCode() == 1){
                     //start student fragment
                     bundle = new Bundle();
-                    bundle.putSerializable("user",user);
+                    bundle.putSerializable("user", user);
                     fragment = getFragmentManager().findFragmentByTag(StudentFragment.TAG);
                     if (fragment == null) {
                         fragment = new StudentFragment();
                         fragment.setArguments(bundle);
                     }
-                    getFragmentManager().beginTransaction().replace(R.id.container, fragment, StudentFragment.TAG).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.container, fragment, StudentFragment.TAG)
+                            .addToBackStack(StudentFragment.TAG).commit();
                 }else{
                     //login activity
                     Log.d("Main","in here...");
@@ -92,7 +97,8 @@ public class MainActivity  extends ActionBarActivity
                 if (fragment == null) {
                     fragment = new HelpFragment();
                 }
-                getFragmentManager().beginTransaction().replace(R.id.container, fragment, HelpFragment.TAG).commit();
+                getFragmentManager().beginTransaction().replace(R.id.container, fragment, HelpFragment.TAG)
+                        .addToBackStack(HelpFragment.TAG).commit();
                 break;
             case 2:
                 ((Proctor)getApplicationContext()).getSession().logoutUser();
@@ -116,7 +122,8 @@ public class MainActivity  extends ActionBarActivity
                     fragment = new ProfessorFragment();
                     fragment.setArguments(bundle);
                 }
-                getFragmentManager().beginTransaction().replace(R.id.container, fragment, ProfessorFragment.TAG).commit();
+                getFragmentManager().beginTransaction().replace(R.id.container, fragment, ProfessorFragment.TAG)
+                        .addToBackStack(ProfessorFragment.TAG).commit();
             }
             else{
                 //start student fragment
@@ -127,7 +134,8 @@ public class MainActivity  extends ActionBarActivity
                     fragment = new StudentFragment();
                     fragment.setArguments(bundle);
                 }
-                getFragmentManager().beginTransaction().replace(R.id.container, fragment, StudentFragment.TAG).commit();
+                getFragmentManager().beginTransaction().replace(R.id.container, fragment, StudentFragment.TAG)
+                        .addToBackStack(ProfessorFragment.TAG).commit();
             }
         }
     }
@@ -136,8 +144,15 @@ public class MainActivity  extends ActionBarActivity
         public void onBackPressed() {
             if (mNavigationDrawerFragment.isDrawerOpen())
                 mNavigationDrawerFragment.closeDrawer();
-            else
-                super.onBackPressed();
+            else{
+                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                    getFragmentManager().popBackStack();
+                } else {
+                    super.onBackPressed();
+                }
+            }
+
+
         }
 
     @Override
@@ -181,7 +196,7 @@ public class MainActivity  extends ActionBarActivity
            attendanceFrag.setArguments(args);
            getFragmentManager().beginTransaction()
                    .replace(R.id.container, attendanceFrag, AttendanceFragment.TAG)
-                   .commit();
+                   .addToBackStack(AttendanceFragment.TAG).commit();
        }
 
     }
@@ -192,7 +207,7 @@ public class MainActivity  extends ActionBarActivity
         ViewAttendanceFragment attendanceFrag = (ViewAttendanceFragment)
                 getFragmentManager().findFragmentByTag(ViewAttendanceFragment.TAG);
 
-        if(attendanceFrag==null) {
+        if(attendanceFrag == null) {
             Log.d("Main", "course selected: " + courseId);
             attendanceFrag = new ViewAttendanceFragment();
             Bundle args = new Bundle();
@@ -200,7 +215,7 @@ public class MainActivity  extends ActionBarActivity
             attendanceFrag.setArguments(args);
             getFragmentManager().beginTransaction()
                     .replace(R.id.container, attendanceFrag, ViewAttendanceFragment.TAG)
-                    .commit();
+                    .addToBackStack(ViewAttendanceFragment.TAG).commit();
         }
     }
 

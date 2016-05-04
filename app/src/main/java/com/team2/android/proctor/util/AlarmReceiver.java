@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.team2.android.proctor.R;
 import com.team2.android.proctor.ui.LoginActivity;
+import com.team2.android.proctor.ui.MainActivity;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         mBuilder.setSound(alarmSound);
         System.out.println("into receive alarm receiver setting repeat alarm");
-        Intent notificationIntent = new Intent(context,LoginActivity.class);
+        Intent notificationIntent = new Intent(context,MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getBroadcast(context.getApplicationContext(),req, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Intent intent1 = new Intent(context.getApplicationContext(), AlarmReceiver.class);
         intent1.putExtra("reqcode",req);

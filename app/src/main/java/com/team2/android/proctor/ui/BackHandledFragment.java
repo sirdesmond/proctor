@@ -3,8 +3,8 @@ package com.team2.android.proctor.ui;
 
 import android.os.Bundle;
 import android.app.Fragment;
-
-
+import android.view.KeyEvent;
+import android.view.View;
 
 
 public abstract class BackHandledFragment extends Fragment {
@@ -14,6 +14,8 @@ public abstract class BackHandledFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         if(!(getActivity()  instanceof BackHandlerInterface)) {
             throw new ClassCastException("Hosting activity must implement BackHandlerInterface");

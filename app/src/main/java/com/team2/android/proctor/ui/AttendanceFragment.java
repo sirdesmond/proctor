@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,13 +142,13 @@ public class AttendanceFragment extends BackHandledFragment implements
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Activity context) {
+        super.onAttach(context);
 
         try{
-            mCallback = (OnViewCoursesListener) activity;
+            mCallback = (OnViewCoursesListener) context;
         }catch(ClassCastException e){
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + "must implement OnCourseSelectedListener");
         }
     }
@@ -171,6 +172,7 @@ public class AttendanceFragment extends BackHandledFragment implements
         }
 
         bundle = getArguments();
+
     }
 
     @Override
