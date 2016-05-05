@@ -54,27 +54,23 @@ public class SessionManager {
         // Storing name in pref
         editor.putString(KEY_USERNAME, userName);
 
-        // Storing email in pref
+        // Storing userId in pref
         editor.putLong(KEY_USERID, userId);
 
         // commit changes
         editor.commit();
     }
 
-    /**
-     * Check login method will check user  status
-     * If false it will redirect user to login page
-     * Else won't do anything
-     * */
+
     public User checkUserType(){
         // Check login status
         if(pref.getString(IS_STUDENT,"").equals("0")){
-            user = new User(0,pref.getLong("userId",9999));
+            user = new User(0,pref.getLong("userId",9999),pref.getString(KEY_USERNAME,"nothing"));
 
         }else if(pref.getString(IS_STUDENT,"").equals("1")){
-            user = new User(1,pref.getLong("userId",9999));
+            user = new User(1,pref.getLong("userId",9999),pref.getString(KEY_USERNAME,"nothing"));
         }else{
-            user = new User(99,99L);
+            user = new User(99,99L,"nothing");
         }
 
         return user;

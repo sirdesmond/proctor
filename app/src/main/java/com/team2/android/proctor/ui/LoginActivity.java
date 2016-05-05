@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,7 +73,10 @@ public class LoginActivity extends AppCompatActivity implements
                 proctor.getSession().createLoginSession(loginOutput.getString("isStudent"),
                         username, loginOutput.getLong("userId"));
                 Intent i = new Intent();
-                setResult(Activity.RESULT_CANCELED,i);
+                User user = ((Proctor)getApplicationContext()).getSession().checkUserType();
+
+                Log.d("Login",user.getUserName()+":"+user.getUserId());
+                setResult(Activity.RESULT_CANCELED, i);
                 finish();
             } else {
                 Toast.makeText(this, "wrong credentials", Toast.LENGTH_SHORT).show();

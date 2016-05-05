@@ -52,7 +52,8 @@ public class MainActivity  extends ActionBarActivity
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
         // populate the navigation drawer
         //TODO set userData
-        mNavigationDrawerFragment.setUserData("Desmond", "dappiahk@hawk.iit.edu", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+        mNavigationDrawerFragment.setUserData(user.getUserName(), user.getUserName()+"@hawk.iit.edu",
+                BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
     }
 
     @Override
@@ -111,6 +112,8 @@ public class MainActivity  extends ActionBarActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         user = ((Proctor)getApplicationContext()).getSession().checkUserType();
+        mNavigationDrawerFragment.setUserData(user.getUserName(), user.getUserName()+"@hawk.iit.edu",
+                BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
         if (requestCode == 1){
             Log.d("Main", "came back");
             if(user.getCode() == 0){
@@ -145,10 +148,10 @@ public class MainActivity  extends ActionBarActivity
             if (mNavigationDrawerFragment.isDrawerOpen())
                 mNavigationDrawerFragment.closeDrawer();
             else{
-                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                if (getFragmentManager().getBackStackEntryCount() > 1) {
                     getFragmentManager().popBackStack();
                 } else {
-                    super.onBackPressed();
+                    Log.d("Main","Ignore back press");
                 }
             }
 
@@ -213,10 +216,12 @@ public class MainActivity  extends ActionBarActivity
             Bundle args = new Bundle();
             args.putSerializable("courseId", courseId);
             attendanceFrag.setArguments(args);
+
             getFragmentManager().beginTransaction()
                     .replace(R.id.container, attendanceFrag, ViewAttendanceFragment.TAG)
                     .addToBackStack(ViewAttendanceFragment.TAG).commit();
         }
+
     }
 
     @Override

@@ -57,12 +57,14 @@ public class AttendanceFragment extends BackHandledFragment implements
 
     public static final String TAG = "attend";
     SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
     Long pref_UserId;
     Course course;
     Proctor proctor;
     View fragmentView;
     OnViewCoursesListener mCallback;
     Bundle bundle;
+    TextView already_chk;
 
 
     public interface OnViewCoursesListener{
@@ -105,7 +107,7 @@ public class AttendanceFragment extends BackHandledFragment implements
     Button take_attendance_btn;
     Button view_attendance_btn;
     Button give_attendance_btn;
-
+    boolean checked_in = false;
     /** The endpoint ID of the connected peer, used for messaging **/
     private String mOtherEndpointId;
     // TODO: Rename parameter arguments, choose names that match
@@ -171,6 +173,7 @@ public class AttendanceFragment extends BackHandledFragment implements
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+
         bundle = getArguments();
 
     }
@@ -182,14 +185,18 @@ public class AttendanceFragment extends BackHandledFragment implements
         User user = (User) bundle.getSerializable("user");
         int userType = user.getCode();
 
-        if(userType == 0 )
-            fragmentView = inflater.inflate(R.layout.fragment_prof_attendance, container, false);
-
-        if(userType == 1 )
-            fragmentView = inflater.inflate(R.layout.fragment_student_attendance, container, false);
-
         sharedPref = getActivity().getSharedPreferences(getString
                 (R.string.SHARED_PREF_KEY), Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        checked_in = sharedPref.getBoolean("checkedIn",false);
+        if(userType == 0 ) {
+            fragmentView = inflater.inflate(R.layout.fragment_prof_attendance, container, false);
+        }
+
+        if(userType == 1 ) {
+            fragmentView = inflater.inflate(R.layout.fragment_student_attendance, container, false);
+        }
+
         pref_UserId=sharedPref.getLong(getString(R.string.USERID), 0);
 
         Log.d(TAG,"the user id :"+ pref_UserId);
@@ -204,6 +211,7 @@ public class AttendanceFragment extends BackHandledFragment implements
         take_attendance_btn = (Button) fragmentView.findViewById(R.id.takeatt_btn);
         view_attendance_btn = (Button) fragmentView.findViewById(R.id.viewatt_btn);
         give_attendance_btn = (Button) fragmentView.findViewById(R.id.checkin_btn);
+        already_chk = (TextView) fragmentView.findViewById(R.id.already_chk);
 
         /*course_tv.setText(course.getCourseName());
         duration_tv.setText(course.getStartDuration().toString()+course.getEndDuration().toString());*/
@@ -286,7 +294,7 @@ public class AttendanceFragment extends BackHandledFragment implements
                     updateToast(STATE_ADVERTISING);
                 } else {
                     Log.d(TAG, "startAdvertising:onResult: FAILURE");
-
+                    Toast.makeText(getActivity(), "Professor is not ready yet!", Toast.LENGTH_SHORT).show();
                     int statusCode = result.getStatus().getStatusCode();
                     if (statusCode == ConnectionsStatusCodes.STATUS_ALREADY_ADVERTISING) {
                         Log.d(TAG, "STATUS_ALREADY_ADVERTISING");
@@ -342,8 +350,20 @@ public class AttendanceFragment extends BackHandledFragment implements
 
         //send id:present
         String msg = ""+pref_UserId+":"+ course.getCourse_id();
-        Log.d(TAG,"sending message...");
-        Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, msg.getBytes());
+        Log.d(TAG, "sending message...");
+        if(!checked_in){
+
+            Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, msg.getBytes());
+            editor.putBoolean("checkedIn",true);
+            editor.commit();
+            give_attendance_btn.setVisibility(View.INVISIBLE);
+            already_chk.setVisibility(View.VISIBLE);
+            already_chk.setText("You just checked in to this class");
+        }else{
+            give_attendance_btn.setVisibility(View.INVISIBLE);
+            already_chk.setVisibility(View.VISIBLE);
+            already_chk.setText("You've checked into this class already");
+        }
     }
 
     /**
@@ -499,7 +519,7 @@ public class AttendanceFragment extends BackHandledFragment implements
                 break;
             case R.id.checkin_btn:
                 startDiscovery();
-                Toast.makeText(getActivity(), "Checking in in background", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "giving attendance in background", Toast.LENGTH_LONG).show();
 
                 break;
 

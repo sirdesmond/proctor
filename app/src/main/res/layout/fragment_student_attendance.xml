@@ -66,7 +66,19 @@
             android:layout_height="wrap_content"
             android:text="CHECK IN"
             android:id="@+id/checkin_btn"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You've already checked into this class"
+            android:id="@+id/already_chk"
+            android:layout_above="@+id/checkin_btn"
+            android:textSize="20sp"
+            android:visibility="invisible"/>
 
 
     </RelativeLayout>

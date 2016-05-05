@@ -7,7 +7,7 @@ public class Constants {
     public static final int ENDPOINT_PORT = 8091 ;
 
     //http://ec2-54-172-114-213.compute-1.amazonaws.com
-    public static final String BASE_URL = "http://192.168.2.6:"+ENDPOINT_PORT+"/" ;
+    public static final String BASE_URL = "http://ec2-54-172-114-213.compute-1.amazonaws.com:"+ENDPOINT_PORT+"/" ;
 
 
     // this is for the login page end point
