@@ -94,8 +94,6 @@ public class SessionManager {
         // Add new Flag to start new Activity
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Staring Login Activity
-        _context.startActivity(i);
     }
 
 

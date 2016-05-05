@@ -88,7 +88,6 @@ public class MainActivity  extends ActionBarActivity
                             .addToBackStack(StudentFragment.TAG).commit();
                 }else{
                     //login activity
-                    Log.d("Main","in here...");
                     Intent i = new Intent(getApplicationContext(),LoginActivity.class);
                     startActivityForResult(i, 1);
                 }
@@ -112,8 +111,9 @@ public class MainActivity  extends ActionBarActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         user = ((Proctor)getApplicationContext()).getSession().checkUserType();
-        mNavigationDrawerFragment.setUserData(user.getUserName(), user.getUserName()+"@hawk.iit.edu",
+        mNavigationDrawerFragment.setUserData(user.getUserName(), user.getUserName() + "@hawk.iit.edu",
                 BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+
         if (requestCode == 1){
             Log.d("Main", "came back");
             if(user.getCode() == 0){
@@ -145,14 +145,13 @@ public class MainActivity  extends ActionBarActivity
 
     @Override
         public void onBackPressed() {
-            if (mNavigationDrawerFragment.isDrawerOpen())
-                mNavigationDrawerFragment.closeDrawer();
-            else{
-                if (getFragmentManager().getBackStackEntryCount() > 1) {
-                    getFragmentManager().popBackStack();
-                } else {
-                    Log.d("Main","Ignore back press");
-                }
+
+            if (getFragmentManager().getBackStackEntryCount() > 1) {
+                getFragmentManager().popBackStack();
+            } else {
+                if (mNavigationDrawerFragment.isDrawerOpen())
+                    mNavigationDrawerFragment.closeDrawer();
+                else mNavigationDrawerFragment.openDrawer();
             }
 
 

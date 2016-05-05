@@ -214,17 +214,21 @@ public class AttendanceFragment extends BackHandledFragment implements
         course = (Course) bundle.getSerializable("course");
         Log.d("Attendance","Course is "+ course.getCourseName()+":"+course.getCourse_id());
 
-        Interval interval = new Interval(course.getStartDuration(), new DateTime(DateTimeZone.UTC).getMillis());
+        if(userType == 1){
 
-         period = interval.toPeriod();
+            Interval interval = new Interval(course.getStartDuration(), new DateTime(DateTimeZone.UTC).getMillis());
 
-        Log.d("Attendance", "Number of weeks: " + period.getWeeks());
+            period = interval.toPeriod();
 
-        Attendance attendance = new Attendance();
-        attendance.setUserId(user.getUserId());
-        attendance.setCourseId(course.getCourse_id());
+            Log.d("Attendance", "Number of weeks: " + period.getWeeks());
 
-        new GetAttendanceCountTask().execute(attendance);
+            Attendance attendance = new Attendance();
+            attendance.setUserId(user.getUserId());
+            attendance.setCourseId(course.getCourse_id());
+
+            new GetAttendanceCountTask().execute(attendance);
+        }
+
 
 
         //set view based on user type 0-prof, 1-student
