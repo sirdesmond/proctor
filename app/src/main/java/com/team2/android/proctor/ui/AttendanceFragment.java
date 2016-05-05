@@ -38,6 +38,11 @@ import com.team2.android.proctor.util.JSONParser;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +70,7 @@ public class AttendanceFragment extends BackHandledFragment implements
     OnViewCoursesListener mCallback;
     Bundle bundle;
     TextView already_chk;
+    TextView curr_score;
 
 
     public interface OnViewCoursesListener{
@@ -119,6 +125,9 @@ public class AttendanceFragment extends BackHandledFragment implements
     private String mParam1;
     private String mParam2;
 
+    int attendance_count;
+    User user;
+    Period period;
 
     public AttendanceFragment() {
         // Required empty public constructor
@@ -182,7 +191,7 @@ public class AttendanceFragment extends BackHandledFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        User user = (User) bundle.getSerializable("user");
+         user = (User) bundle.getSerializable("user");
         int userType = user.getCode();
 
         sharedPref = getActivity().getSharedPreferences(getString
@@ -204,6 +213,20 @@ public class AttendanceFragment extends BackHandledFragment implements
         //TODO fetch course
         course = (Course) bundle.getSerializable("course");
         Log.d("Attendance","Course is "+ course.getCourseName()+":"+course.getCourse_id());
+
+        Interval interval = new Interval(course.getStartDuration(), new DateTime(DateTimeZone.UTC).getMillis());
+
+         period = interval.toPeriod();
+
+        Log.d("Attendance", "Number of weeks: " + period.getWeeks());
+
+        Attendance attendance = new Attendance();
+        attendance.setUserId(user.getUserId());
+        attendance.setCourseId(course.getCourse_id());
+
+        new GetAttendanceCountTask().execute(attendance);
+
+
         //set view based on user type 0-prof, 1-student
 
         course_tv = (TextView) fragmentView.findViewById(R.id.course_tv);
@@ -213,6 +236,7 @@ public class AttendanceFragment extends BackHandledFragment implements
         give_attendance_btn = (Button) fragmentView.findViewById(R.id.checkin_btn);
         already_chk = (TextView) fragmentView.findViewById(R.id.already_chk);
 
+        curr_score = (TextView) fragmentView.findViewById(R.id.attend_score);
         /*course_tv.setText(course.getCourseName());
         duration_tv.setText(course.getStartDuration().toString()+course.getEndDuration().toString());*/
 
@@ -239,6 +263,19 @@ public class AttendanceFragment extends BackHandledFragment implements
         super.onStart();
         Log.d(TAG, "onStart");
         mGoogleApiClient.connect();
+    }
+
+    private int getTotalPoints(Period period){
+        int total = 0;
+
+        if(period.getMonths() >0){
+            total += (4*period.getMonths());
+        }
+        if(period.getWeeks() > 0){
+            total += period.getWeeks();
+        }
+
+        return total;
     }
 
     @Override
@@ -294,7 +331,6 @@ public class AttendanceFragment extends BackHandledFragment implements
                     updateToast(STATE_ADVERTISING);
                 } else {
                     Log.d(TAG, "startAdvertising:onResult: FAILURE");
-                    Toast.makeText(getActivity(), "Professor is not ready yet!", Toast.LENGTH_SHORT).show();
                     int statusCode = result.getStatus().getStatusCode();
                     if (statusCode == ConnectionsStatusCodes.STATUS_ALREADY_ADVERTISING) {
                         Log.d(TAG, "STATUS_ALREADY_ADVERTISING");
@@ -312,9 +348,6 @@ public class AttendanceFragment extends BackHandledFragment implements
         if (!isConnectedToNetwork()) {
             Log.d(TAG, "startDiscovery: not connected to WiFi network.");
 
-            //TODO: backup for WIFI
-            //if prof sent signal to service
-            //then send attendance to service directly
             return;
         }
 
@@ -330,7 +363,7 @@ public class AttendanceFragment extends BackHandledFragment implements
                             updateToast(STATE_DISCOVERING);
                         } else {
                             Log.d(TAG, "startDiscovery:onResult: FAILURE");
-
+                            Toast.makeText(getActivity(), "Professor is not ready yet!", Toast.LENGTH_SHORT).show();
                             // If the user hits 'Discover' multiple times in the timeout window,
                             // the error will be STATUS_ALREADY_DISCOVERING
                             int statusCode = status.getStatusCode();
@@ -531,6 +564,42 @@ public class AttendanceFragment extends BackHandledFragment implements
         Log.d(TAG,"onConnectionFailed: " + connectionResult);
         updateToast(STATE_IDLE);
     }
+
+    class GetAttendanceCountTask extends AsyncTask<Attendance, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Attendance... params) {
+            JSONObject returnJsonVal = null;
+            for (Attendance param : params) {
+                List<NameValuePair> params1 = new ArrayList<>();
+
+                params1.add(new BasicNameValuePair("courseId",
+                        String.valueOf(param.getCourseId())));
+                params1.add(new BasicNameValuePair("userId",
+                        String.valueOf(param.getUserId())));
+
+                returnJsonVal = JSONParser.makeHttpRequest(Constants.ATTENDANCE_COUNT_URL, "POST", params1);
+            }
+            return returnJsonVal;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+
+            try {
+                String count = jsonObject.getString("response");
+                attendance_count = Integer.parseInt(count);
+                Log.d(TAG, "attendance count: " + count);
+                Log.d("Attendance", "Attendance score: " + attendance_count + "/" +
+                        course.getDays().length() * getTotalPoints(period));
+                curr_score.setText("Current Score: " + attendance_count + "/" +
+                        course.getDays().length() * getTotalPoints(period));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     class TakeAttendanceTask extends AsyncTask<Attendance, Void, JSONObject> {
 

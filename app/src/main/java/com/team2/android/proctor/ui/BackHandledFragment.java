@@ -3,8 +3,6 @@ package com.team2.android.proctor.ui;
 
 import android.os.Bundle;
 import android.app.Fragment;
-import android.view.KeyEvent;
-import android.view.View;
 
 
 public abstract class BackHandledFragment extends Fragment {

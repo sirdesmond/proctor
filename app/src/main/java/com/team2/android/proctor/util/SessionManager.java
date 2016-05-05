@@ -83,8 +83,6 @@ public class SessionManager {
      * */
     public void logoutUser(){
         // Clearing all data from Shared Preferences
-
-        createLoginSession("1","9999999",999999L);
         editor.clear();
         editor.commit();
 

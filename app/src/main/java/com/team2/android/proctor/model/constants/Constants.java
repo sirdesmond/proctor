@@ -16,5 +16,6 @@ public class Constants {
     public static final String PROFESSOR_COURSES_URL = BASE_URL+"api/professor/courses/" ;
     public static final String TAKE_ATTENDANCE_URL = BASE_URL+"api/student/attendance/" ;
     public static final String VIEW_ATTENDANCE_URL = BASE_URL+"api/professor/students/" ;
+    public static final String ATTENDANCE_COUNT_URL = BASE_URL+"api/student/attendancecount/" ;
 
 }

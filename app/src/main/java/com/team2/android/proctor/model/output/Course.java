@@ -10,15 +10,15 @@ import java.sql.Timestamp;
 public class Course implements Serializable{
 
     private String      courseName;
-    private Timestamp   startDuration;
-    private Timestamp   endDuration;
+    private long   startDuration;
+    private long   endDuration;
     private Time        courseStartTime;
     private Time        courseEndTime;
     private String      days;
     private int         course_id;
 
 
-    public Course(String courseName, Timestamp startDuration, Timestamp endDuration, Time courseStartTime, Time courseEndTime, String days,int course_id) {
+    public Course(String courseName, long startDuration, long endDuration, Time courseStartTime, Time courseEndTime, String days,int course_id) {
         this.courseName = courseName;
         this.startDuration = startDuration;
         this.endDuration = endDuration;
@@ -44,19 +44,19 @@ public class Course implements Serializable{
         this.courseName = courseName;
     }
 
-    public Timestamp getStartDuration() {
+    public long getStartDuration() {
         return startDuration;
     }
 
-    public void setStartDuration(Timestamp startDuration) {
+    public void setStartDuration(long startDuration) {
         this.startDuration = startDuration;
     }
 
-    public Timestamp getEndDuration() {
+    public long getEndDuration() {
         return endDuration;
     }
 
-    public void setEndDuration(Timestamp endDuration) {
+    public void setEndDuration(long endDuration) {
         this.endDuration = endDuration;
     }
 

@@ -36,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -116,8 +117,8 @@ public class StudentFragment extends BackHandledFragment
      * @return A new instance of fragment ProfessorFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfessorFragment newInstance(String param1, String param2) {
-        ProfessorFragment fragment = new ProfessorFragment();
+    public static StudentFragment newInstance(String param1, String param2) {
+        StudentFragment fragment = new StudentFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -189,6 +190,8 @@ public class StudentFragment extends BackHandledFragment
         String[] courseNames = new String[size];
         Time[] stimestamps = new Time[size];
         Time[] etimestamps = new Time[size];
+        long[] startDurations = new long[size];
+        long[] endDurations = new long[size];
         String[] days = new String[size];
         int[] courseIds = new int[size];
 
@@ -198,6 +201,8 @@ public class StudentFragment extends BackHandledFragment
                 courseNames[i] = object.getString("courseName");
                 stimestamps[i] = Time.valueOf(object.getString("courseStartTime"));
                 etimestamps[i] = Time.valueOf(object.getString("courseEndTime"));
+                startDurations[i] = Long.parseLong(object.getString("startDuration").toString());
+                endDurations[i] =Long.parseLong(object.getString("endDuration").toString());
                 days[i] = object.getString("days");
                 courseIds[i] = object.getInt("course_id");
 
@@ -207,8 +212,8 @@ public class StudentFragment extends BackHandledFragment
         }
         Course coursearray[] = new Course[size];
         for (int i = 0; i < size; i++) {
-            coursearray[i] = new Course(courseIds[i], courseNames[i],
-                    stimestamps[i], etimestamps[i], days[i]);
+            coursearray[i] = new Course(courseNames[i],startDurations[i],endDurations[i],
+                    stimestamps[i], etimestamps[i], days[i],courseIds[i]);
             courses.add(coursearray[i]);
         }
 
