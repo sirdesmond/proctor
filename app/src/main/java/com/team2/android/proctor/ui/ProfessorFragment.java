@@ -5,9 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +48,8 @@ public class ProfessorFragment extends BackHandledFragment {
     Bundle bundle;
     OnCourseSelectedListener mCallback;
     User user;
+    ListView courselist;
+    CourseAdapter courseAdapter;
 
     public interface OnCourseSelectedListener{
         public void onCourseSelected(User user,Course course);
@@ -96,7 +96,7 @@ public class ProfessorFragment extends BackHandledFragment {
 
     @Override
     public boolean onBackPressed() {
-        return true;
+        return false;
     }
 
     @Override
@@ -105,18 +105,12 @@ public class ProfessorFragment extends BackHandledFragment {
         proctor = (Proctor) getActivity().getApplicationContext();
         bundle = getArguments();
 
+        LayoutInflater mInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-    }
+        fragmentView = mInflater.inflate(R.layout.fragment_professor, null, false);
+        courselist = (ListView) fragmentView.findViewById(R.id.courselist);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        fragmentView = inflater.inflate(R.layout.fragment_professor, container, false);
-        ListView courselist = (ListView) fragmentView.findViewById(R.id.courselist);
-        CourseAdapter courseAdapter;
-
-         user = (User) bundle.getSerializable("user");
+        user = (User) bundle.getSerializable("user");
         Log.d("Professor", "user id: " + user.getUserId());
         long professorIDint = user.getUserId();
         String professorID = String.valueOf(professorIDint);
@@ -166,9 +160,19 @@ public class ProfessorFragment extends BackHandledFragment {
             courses.add(coursearray[i]);
         }
 
-        courseAdapter = new CourseAdapter(getActivity(),android.R.layout.simple_list_item_1,courses);
-        courselist.setAdapter(courseAdapter);
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        fragmentView = inflater.inflate(R.layout.fragment_professor, container, false);
+        courselist = (ListView) fragmentView.findViewById(R.id.courselist);
+
+
+        courseAdapter = new CourseAdapter(getActivity(), android.R.layout.simple_list_item_1, courses);
+        courselist.setAdapter(courseAdapter);
 
         courselist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -176,11 +180,14 @@ public class ProfessorFragment extends BackHandledFragment {
                 //start attendance activity with selected course details and user type
                 Course course = courses.get(position);
 
-                mCallback.onCourseSelected(user,course);
-                Log.d("Professor","done selecting course");
+                mCallback.onCourseSelected(user, course);
             }
         });
+
+
         return fragmentView;
+
+
     }
 
 

@@ -8,18 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.team2.android.proctor.R;
 import com.team2.android.proctor.model.constants.Constants;
@@ -36,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,27 +73,6 @@ public class StudentFragment extends BackHandledFragment
 
     int alarm_req = 0;
 
-  /*  @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-       if (isChecked) {
-            final int alarm_cnt = alarm_req;
-            // switchStatus.setText("Switch is currently ON");
-            try {
-                editor.putBoolean(NOTIFY_STATUS, true);
-                editor.commit();
-                Log.d("Alarm", "starting alarm...");
-                alarms(alarm_cnt);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-        } else {
-            Log.d("Alarm","not checked");
-            cancelAlarm();
-            editor.putBoolean(NOTIFY_STATUS, false);
-            editor.commit();
-        }
-    }*/
 
     public interface OnCourseSelectedListener {
         public void onCourseSelected(User user, Course course);
@@ -222,46 +196,6 @@ public class StudentFragment extends BackHandledFragment
             alarm_req = alarm_req + days[n].length();
         }
 
-  /*      Switch notifySwitch = (Switch) fragmentView.findViewById(R.id.notify_alarm);
-        pref = getActivity().getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = pref.edit();
-        boolean notify_status = pref.getBoolean(NOTIFY_STATUS, false);
-
-        //set the switch to ON
-        if (notify_status)
-            notifySwitch.setChecked(true);
-        else
-            notifySwitch.setChecked(false);
-
-        Log.d("Alarm", "switch? " + notifySwitch.getId());
-      //  notifySwitch.setOnCheckedChangeListener(this);
-        notifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-Log.d("","clicked on toggle");
-                if (isChecked) {
-                    // switchStatus.setText("Switch is currently ON");
-                    try {
-                        Log.d("","clicked on on");
-                        editor.putBoolean(NOTIFY_STATUS, true);
-                        editor.commit();
-                        alarms(alarm_req);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    Log.d("","clicked on off");
-                    cancelAlarm();
-                    editor.putBoolean(NOTIFY_STATUS, false);
-                    editor.commit();
-                }
-
-            }
-        });
-*/
 
 
     }
