@@ -128,6 +128,7 @@ public class AttendanceFragment extends BackHandledFragment implements
     int attendance_count;
     User user;
     Period period;
+    Attendance attendance;
 
     public AttendanceFragment() {
         // Required empty public constructor
@@ -184,6 +185,11 @@ public class AttendanceFragment extends BackHandledFragment implements
 
 
         bundle = getArguments();
+        sharedPref = getActivity().getSharedPreferences(getString
+                (R.string.SHARED_PREF_KEY), Context.MODE_PRIVATE);
+
+        editor = sharedPref.edit();
+        checked_in = sharedPref.getBoolean("checkedIn", false);
 
     }
 
@@ -191,13 +197,11 @@ public class AttendanceFragment extends BackHandledFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
          user = (User) bundle.getSerializable("user");
         int userType = user.getCode();
 
-        sharedPref = getActivity().getSharedPreferences(getString
-                (R.string.SHARED_PREF_KEY), Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
-        checked_in = sharedPref.getBoolean("checkedIn",false);
         if(userType == 0 ) {
             fragmentView = inflater.inflate(R.layout.fragment_prof_attendance, container, false);
         }
@@ -205,6 +209,8 @@ public class AttendanceFragment extends BackHandledFragment implements
         if(userType == 1 ) {
             fragmentView = inflater.inflate(R.layout.fragment_student_attendance, container, false);
         }
+
+        fragmentView.invalidate();
 
         pref_UserId=sharedPref.getLong(getString(R.string.USERID), 0);
 
@@ -222,11 +228,12 @@ public class AttendanceFragment extends BackHandledFragment implements
 
             Log.d("Attendance", "Number of weeks: " + period.getWeeks());
 
-            Attendance attendance = new Attendance();
+            attendance = new Attendance();
             attendance.setUserId(user.getUserId());
             attendance.setCourseId(course.getCourse_id());
 
             new GetAttendanceCountTask().execute(attendance);
+
         }
 
 
@@ -391,11 +398,15 @@ public class AttendanceFragment extends BackHandledFragment implements
         if(!checked_in){
 
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mOtherEndpointId, msg.getBytes());
-            editor.putBoolean("checkedIn",true);
+            editor.putBoolean("checkedIn", true);
             editor.commit();
             give_attendance_btn.setVisibility(View.INVISIBLE);
             already_chk.setVisibility(View.VISIBLE);
             already_chk.setText("You just checked in to this class");
+            curr_score.invalidate();
+            curr_score.setText("Current Score: " + (attendance_count+1) + "/" +
+                    course.getDays().length() * getTotalPoints(period));
+            checked_in = true;
         }else{
             give_attendance_btn.setVisibility(View.INVISIBLE);
             already_chk.setVisibility(View.VISIBLE);
@@ -529,7 +540,7 @@ public class AttendanceFragment extends BackHandledFragment implements
         //send payload in async task
         Log.d(TAG,"onMessageReceived:" +  new String(payload));
         String message = new String(payload);
-        Attendance attendance = new Attendance();
+        attendance = new Attendance();
         attendance.setUserId(Long.parseLong(message.split(":")[0]));
         attendance.setCourseId(Integer.parseInt(message.split(":")[1]));
 

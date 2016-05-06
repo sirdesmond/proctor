@@ -68,18 +68,16 @@
 
         <Button
             android:id="@+id/takeatt_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="TAKE ATTENDANCE" />
 
         <Button
             android:id="@+id/viewatt_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_below="@+id/takeatt_btn"
             android:text="VIEW ATTENDANCE" />
 
 
