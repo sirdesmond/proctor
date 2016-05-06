@@ -10,17 +10,12 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.team2.android.proctor.R;
-import com.team2.android.proctor.ui.LoginActivity;
 import com.team2.android.proctor.ui.MainActivity;
 
 import java.util.ArrayList;
 
-/**
- * Created by roger on 4/25/2016.
- */
 public class AlarmReceiver extends BroadcastReceiver
 {
     NotificationCompat.Builder mBuilder;
