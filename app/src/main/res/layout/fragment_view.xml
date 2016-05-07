@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical">
         <TextView
             android:id="@+id/present_tv"
@@ -22,7 +22,8 @@
         <ListView
             android:id="@+id/presentList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="match_parent">
+        </ListView>
     </LinearLayout>
 
 
