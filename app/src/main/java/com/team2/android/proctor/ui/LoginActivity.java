@@ -86,6 +86,11 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     public boolean isValidInput(String username, String password) {
 
         return (username.isEmpty() || password.isEmpty()) ? false : true;

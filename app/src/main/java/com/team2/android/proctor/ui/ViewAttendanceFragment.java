@@ -1,5 +1,6 @@
 package com.team2.android.proctor.ui;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ViewAttendanceFragment extends BackHandledFragment {
+public class ViewAttendanceFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -68,15 +69,6 @@ public class ViewAttendanceFragment extends BackHandledFragment {
         return fragment;
     }
 
-    @Override
-    public String getTagText() {
-        return TAG;
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return true;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

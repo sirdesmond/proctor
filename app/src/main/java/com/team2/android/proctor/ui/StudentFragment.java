@@ -2,6 +2,7 @@ package com.team2.android.proctor.ui;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
-public class StudentFragment extends BackHandledFragment
+public class StudentFragment extends Fragment
         //implements CompoundButton.OnCheckedChangeListener
 {
     // TODO: Rename parameter arguments, choose names that match
@@ -110,16 +111,6 @@ public class StudentFragment extends BackHandledFragment
             throw new ClassCastException(activity.toString()
                     + "must implement OnCourseSelectedListener");
         }
-    }
-
-    @Override
-    public String getTagText() {
-        return TAG;
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return false;
     }
 
     @Override
@@ -206,6 +197,7 @@ public class StudentFragment extends BackHandledFragment
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_student, container, false);
         courselist = (ListView) fragmentView.findViewById(R.id.courselist);
+
 
 
         courseAdapter = new CourseAdapter(getActivity(), android.R.layout.simple_list_item_1, courses);

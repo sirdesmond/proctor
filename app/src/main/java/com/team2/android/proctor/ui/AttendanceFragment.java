@@ -1,18 +1,15 @@
 package com.team2.android.proctor.ui;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
-import android.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +38,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AttendanceFragment extends BackHandledFragment implements
+public class AttendanceFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener,
@@ -163,16 +159,6 @@ public class AttendanceFragment extends BackHandledFragment implements
             throw new ClassCastException(context.toString()
                     + "must implement OnCourseSelectedListener");
         }
-    }
-
-    @Override
-    public String getTagText() {
-        return TAG;
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return true;
     }
 
     @Override
